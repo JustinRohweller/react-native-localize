@@ -4,7 +4,15 @@ export function findBestLanguageTag<T extends string>(
   languageTags: ReadonlyArray<T>,
 ): { languageTag: T; isRTL: boolean } | undefined {
   const locales = getLocales();
-  const loweredLanguageTags = languageTags.map((tag) => tag.toLowerCase());
+  const loweredLanguageTags = languageTags.map((tag) => {
+    if (tag?.indexOf("-") !== -1) {
+      const splitTag = tag.split("-");
+      if (splitTag[0]) {
+        return splitTag[0].toLowerCase();
+      }
+    }
+    return tag.toLowerCase();
+  });
 
   for (let i = 0; i < locales.length; i++) {
     const currentLocale = locales[i];
@@ -51,6 +59,7 @@ export {
   uses24HourClock,
   usesAutoDateAndTime,
   usesAutoTimeZone,
-  usesMetricSystem,
+  usesMetricSystem
 } from "./module";
 export * from "./types";
+
